@@ -1,0 +1,7 @@
+﻿  Application.cpp
+  Shader.cpp
+  Source.cpp
+  Triangle.cpp
+  VBO.cpp
+  Generování kódu...
+C:\Users\Lukáš Moravec\Dropbox\VS projects\CV01\CV01\VBO.cpp : fatal error C1090: Volání rozhraní PDB API nebylo úspěšné, kód chyby 3: C:\Users\Lukáš Moravec\Dropbox\VS projects\CV01\CV01\x64\Debug\vc142.pdb
