@@ -19,7 +19,6 @@ Camera::~Camera()
 
 glm::mat4 Camera::getCamera(void) {
 	return glm::lookAt(position, position + target, up);
-
 }
 /*
 glm::mat4 Camera::getProjection() {
@@ -45,4 +44,42 @@ void Camera::updateCameraVectors()
 	// Also re-calculate the Right and Up vector
 	right = glm::normalize(glm::cross(this->target, worldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
 	up = glm::normalize(glm::cross(right, this->target));
+}
+
+void Camera::processInput(GLFWwindow* window, float cameraSpeed)
+{
+	//cameraSpeed = 0.05f; // adjust accordingly
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	double tempXpos, tempYpos;
+	glfwGetCursorPos(window, &tempXpos, &tempYpos);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		//position += cameraSpeed * target;
+		this->translate(cameraSpeed * target);
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		//position -= cameraSpeed * target;
+		this->translate(-(cameraSpeed * target));
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+		//position -= glm::normalize(glm::cross(target, up)) * cameraSpeed;
+		this->translate(-(glm::normalize(glm::cross(target, up)) * cameraSpeed));
+	}
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		//position += glm::normalize(glm::cross(target, up)) * cameraSpeed;
+		this->translate(glm::normalize(glm::cross(target, up)) * cameraSpeed);
+	}
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+
+	}
+	//Yaw = 12;
+	//this->rotate(glm::radians(12.0f), glm::vec3(0, 1, 0));
+	/*
+	if (xpos != tempXpos) {
+		
+	}
+	if (ypos != tempYpos) {
+		Pitch += ypos - tempXpos;
+	}
+	*/
+	this->updateCameraVectors();
 }

@@ -2961,18 +2961,18 @@ const std::string& fragment_shader =
 
 "void main () {"
 "	float ambientStrength = 0.1;"
-"	float specularStrength = 0.5;"
+"	float specularStrength = 0.9;"
 
 "	vec3 norm = normalize(Normal);"
 "	vec3 lightDir = normalize(lightPos - Position);"
 "	vec3 viewDir = normalize(viewPos - Position);"
-"	vec3 reflectDir = reflect(-lightDir, norm);  "
+"	vec3 reflectDir = reflect(lightDir, norm);  "
 "	float diff = max(dot(norm, lightDir), 0.0);"
 "	vec3 diffuse = diff * lightColor;"
 "	vec3 ambient = ambientStrength * lightColor;"
-"	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);"
+"	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 128);"
 "	vec3 specular = specularStrength * spec * lightColor;"
-"	vec3 result = (ambient + diffuse/* + specular*/) * modelColor;"
+"	vec3 result = (ambient + diffuse + specular) * modelColor;"
 "   frag_colour = vec4 (result, 1.0);"
 "}";
 
@@ -3007,7 +3007,7 @@ int main(void)
 	}
 	
 	app->callBackFunctions();
-
+	
 
 	Camera camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f));
 	Shader shader = Shader(&camera, vertex_shader, fragment_shader);

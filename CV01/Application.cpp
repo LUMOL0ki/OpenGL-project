@@ -154,10 +154,9 @@ void Application::draw(Shader shader) {
 	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
 
 	Camera camera = shader.getCamera();
+	//camera.rotate(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	//camera.translate(glm::vec3(8.0f, 0.0f, 0.0f));
 	camera.translate(glm::vec3(0.0f, 0.0f, -8.0f));
-	//camera.rotate(45, glm::vec3(1.0f, 0.0f, 0.0f));
-	
-	
 	GLint modelMatrixID = glGetUniformLocation(shader.GetShaderProgram(), "modelMatrix");
 
 	glEnable(GL_DEPTH_TEST);
@@ -173,17 +172,20 @@ void Application::draw(Shader shader) {
 		//obj.rotate(0.01f, glm::vec3(0.0f, 0.0f, 1.0f));
 		//camera.rotate(0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
 		//Render
+		
 		shader.use();
-
+		//camera.translate(glm::vec3(0.0f, 0.0f, 0.02f));
 		shader.setVec3("lightPos", glm::vec3(0, 0, 0));
 		shader.setVec3("lightColor", glm::vec3(1.5, 1.5, 1.5));
 		shader.setVec3("modelColor", glm::vec3(0.5, 0.1, 0.1));
 		
 		shader.setMat4("projectionMatrix", projection);
+		camera.processInput(window, 0.05f);
 		shader.setMat4("viewMatrix", camera.getMatrix());
 		shader.setVec3("viewPos", camera.getPosition());
 		shader.setMat4("modelMatrix", obj1.getMatrix());
 
+		//obj1.rotate(glm::radians(1.0f), glm::vec3(0, 1, 0));
 		obj1.render(2880);
 		shader.setMat4("modelMatrix", obj2.getMatrix());
 		obj2.render(2880);

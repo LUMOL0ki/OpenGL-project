@@ -3,6 +3,10 @@
 #include <glm/vec4.hpp> // glm::vec4
 #include <glm/mat4x4.hpp>
 
+#include <GL/glew.h>
+//Include GLFW  
+#include <GLFW/glfw3.h>  
+
 #include "Object.h"
 
 #pragma once
@@ -17,6 +21,7 @@ private:
 	//Shader* m_shader;
 	//glm::mat4 projection;
 
+	double xpos, ypos;
 	// Euler Angles
 	float Yaw;
 	float Pitch;
@@ -26,6 +31,7 @@ private:
 	float Zoom;	
 	
 	void updateCameraVectors();
+	
 public:
 	Camera(glm::vec3 position);
 	~Camera();
@@ -35,7 +41,7 @@ public:
 	//glm::mat4 getProjection();
 
 	void moveLeft();
-
+	void processInput(GLFWwindow* window, float cameraSpeed);
 	void moveUp();
 
 

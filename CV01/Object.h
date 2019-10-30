@@ -7,9 +7,10 @@ class Object
 {
 private:
 	//Mesh m_mesh;
-	glm::mat4 m_matrix = glm::mat4(1.0f);
-protected:
+	protected:
 	glm::vec3 position;
+	glm::mat4 m_matrix = glm::mat4(1.0f);
+
 public:
 	Object(glm::vec3 position);
 	~Object();
