@@ -137,6 +137,7 @@ void Application::callBackFunctions() {
 }
 
 void Application::draw(Shader shader) {
+	double xpos, ypos;
 	Light light = Light(glm::vec3(0.0f, 0.0f, 0.0f));
 
 	Mesh obj1 = Mesh(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -152,8 +153,9 @@ void Application::draw(Shader shader) {
 	obj4.translate(glm::vec3(0.0f, -2.0f, 0.0f));
 	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
-
+	
 	Camera camera = shader.getCamera();
+
 	//camera.rotate(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	//camera.translate(glm::vec3(8.0f, 0.0f, 0.0f));
 	camera.translate(glm::vec3(0.0f, 0.0f, -8.0f));
@@ -181,7 +183,11 @@ void Application::draw(Shader shader) {
 		
 		shader.setMat4("projectionMatrix", projection);
 		camera.processInput(window, 0.05f);
-		shader.setMat4("viewMatrix", camera.getMatrix());
+
+		glfwGetCursorPos(window, &xpos, &ypos);
+		camera.mouse_callback(window, xpos, ypos);
+	
+		shader.setMat4("viewMatrix", camera.getCamera());
 		shader.setVec3("viewPos", camera.getPosition());
 		shader.setMat4("modelMatrix", obj1.getMatrix());
 

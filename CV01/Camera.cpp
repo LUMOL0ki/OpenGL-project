@@ -20,6 +20,7 @@ Camera::~Camera()
 glm::mat4 Camera::getCamera(void) {
 	return glm::lookAt(position, position + target, up);
 }
+
 /*
 glm::mat4 Camera::getProjection() {
 	return projection;
@@ -46,30 +47,67 @@ void Camera::updateCameraVectors()
 	up = glm::normalize(glm::cross(right, this->target));
 }
 
+void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+
+	double xoffset = xpos - lastX;
+	double yoffset = lastY - ypos;
+	lastX = xpos;
+	lastY = ypos;
+
+	double sensitivity = 0.05;
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
+
+	Yaw += xoffset;
+	Pitch += yoffset;
+
+	if (Pitch > 89.0f)
+		Pitch = 89.0f;
+	if (Pitch < -89.0f)
+		Pitch = -89.0f;
+
+	glm::vec3 front;
+	front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+	front.y = sin(glm::radians(Pitch));
+	front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+	target = glm::normalize(front);
+	
+}
+
 void Camera::processInput(GLFWwindow* window, float cameraSpeed)
 {
 	//cameraSpeed = 0.05f; // adjust accordingly
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	double tempXpos, tempYpos;
 	glfwGetCursorPos(window, &tempXpos, &tempYpos);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		//position += cameraSpeed * target;
-		this->translate(cameraSpeed * target);
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		//position -= cameraSpeed * target;
-		this->translate(-(cameraSpeed * target));
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		position += cameraSpeed * target;
+		//this->translate(cameraSpeed * target);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		//position -= glm::normalize(glm::cross(target, up)) * cameraSpeed;
-		this->translate(-(glm::normalize(glm::cross(target, up)) * cameraSpeed));
+		position -= cameraSpeed * target;
+		//this->translate(-(cameraSpeed * target));
 	}
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		//position += glm::normalize(glm::cross(target, up)) * cameraSpeed;
-		this->translate(glm::normalize(glm::cross(target, up)) * cameraSpeed);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		position -= glm::normalize(glm::cross(target, up)) * cameraSpeed;
+		//this->translate(-(glm::normalize(glm::cross(target, up)) * cameraSpeed));
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		position += glm::normalize(glm::cross(target, up)) * cameraSpeed;
+		//this->translate(glm::normalize(glm::cross(target, up)) * cameraSpeed);
 	}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-
+		position += up * cameraSpeed;
+	}
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+		position -= up * cameraSpeed;
 	}
 	//Yaw = 12;
 	//this->rotate(glm::radians(12.0f), glm::vec3(0, 1, 0));

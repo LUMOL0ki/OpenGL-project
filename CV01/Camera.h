@@ -20,11 +20,14 @@ private:
 	glm::vec3 worldUp;
 	//Shader* m_shader;
 	//glm::mat4 projection;
+	bool firstMouse = true;
+	double lastX = 400, lastY = 300;
+	//double xpos, ypos;
 
-	double xpos, ypos;
 	// Euler Angles
 	float Yaw;
 	float Pitch;
+
 	// Camera options
 	float MovementSpeed;
 	float MouseSensitivity;
@@ -42,6 +45,7 @@ public:
 
 	void moveLeft();
 	void processInput(GLFWwindow* window, float cameraSpeed);
+	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	void moveUp();
 
 
