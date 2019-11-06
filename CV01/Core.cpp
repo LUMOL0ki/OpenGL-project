@@ -27,7 +27,7 @@
 #include "Renderer.h"
 
 GLFWwindow* window;
-int width = 800, height = 600;
+int width = 1080, height = 800;
 
 static float vertices[] = { 0.0f, 0.5f, 0.0f,
 							0.5f, -0.5f, 0.0f,
@@ -2970,7 +2970,7 @@ const std::string& fragment_shader =
 "	float diff = max(dot(norm, lightDir), 0.0);"
 "	vec3 diffuse = diff * lightColor;"
 "	vec3 ambient = ambientStrength * lightColor;"
-"	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 128);"
+"	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);"
 "	vec3 specular = specularStrength * spec * lightColor;"
 "	vec3 result = (ambient + diffuse + specular) * modelColor;"
 "   frag_colour = vec4 (result, 1.0);"
@@ -2995,6 +2995,18 @@ bool loadContect() {
 	return true;
 }
 
+bool loadContect(int object) {
+	GLuint VBO = NULL;
+	//vertex buffer object (VBO)	;
+	glGenBuffers(object, &VBO); // generate the VBO
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(sphere), sphere, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	return true;
+}
+
 int main(void)
 {
 	Application* app;
@@ -3002,10 +3014,13 @@ int main(void)
 	if (!app->init(&width, &height)) {
 		exit(EXIT_FAILURE);
 	}
-	if (!loadContect()) {
+	if (!loadContect(1)) {
 		exit(EXIT_FAILURE);
 	}
-	
+	/*if (!loadContect(2)) {
+		exit(EXIT_FAILURE);
+	}*/
+
 	app->callBackFunctions();
 	
 

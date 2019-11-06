@@ -4,9 +4,9 @@ Application* Application::instance = 0;
 
 Application::Application()
 {
-	window = glfwCreateWindow(600, 400, "ZPG", NULL, NULL);
-	width = 600;
-	height = 400;
+	width = 1080;
+	height = 800;
+	window = glfwCreateWindow(width, height, "ZPG", NULL, NULL);
 }
 
 
@@ -137,13 +137,19 @@ void Application::callBackFunctions() {
 }
 
 void Application::draw(Shader shader) {
-	double xpos, ypos;
 	Light light = Light(glm::vec3(0.0f, 0.0f, 0.0f));
+	Mesh objs[4] = {
+	Mesh(glm::vec3(2.0f, 0.0f, 0.0f), 1),
+	Mesh(glm::vec3(-2.0f, 0.0f, 0.0f), 2),
+	Mesh(glm::vec3(0.0f, 2.0f, 0.0f), 3),
+	Mesh(glm::vec3(0.0f, -2.0f, 0.0f), 4)
+	};
 
-	Mesh obj1 = Mesh(glm::vec3(0.0f, 0.0f, 0.0f));
-	Mesh obj2 = Mesh(glm::vec3(0.0f, 0.0f, 0.0f));
-	Mesh obj3 = Mesh(glm::vec3(0.0f, 0.0f, 0.0f));
-	Mesh obj4 = Mesh(glm::vec3(0.0f, 0.0f, 0.0f));
+	Mesh obj1 = Mesh(glm::vec3(0.0f, 0.0f, 0.0f), 1);
+	Mesh obj2 = Mesh(glm::vec3(0.0f, 0.0f, 0.0f), 2);
+	Mesh obj3 = Mesh(glm::vec3(0.0f, 0.0f, 0.0f), 3);
+	Mesh obj4 = Mesh(glm::vec3(0.0f, 0.0f, 0.0f), 4);
+
 	Renderer renderer = Renderer();
 	obj1.translate(glm::vec3(2.0f, 0.0f, 0.0f));
 	//obj1.rotate(-50, glm::vec3(0, 0, 1));
@@ -162,6 +168,11 @@ void Application::draw(Shader shader) {
 	GLint modelMatrixID = glGetUniformLocation(shader.GetShaderProgram(), "modelMatrix");
 
 	glEnable(GL_DEPTH_TEST);
+
+	//pøidání ID do stencil bufferu
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
 	//model = Object::scale(model, glm::vec3(0.5f));
 	while (!glfwWindowShouldClose(window))
 	{
@@ -182,24 +193,47 @@ void Application::draw(Shader shader) {
 		shader.setVec3("modelColor", glm::vec3(0.5, 0.1, 0.1));
 		
 		shader.setMat4("projectionMatrix", projection);
-		camera.processInput(window, 0.05f);
-
-		glfwGetCursorPos(window, &xpos, &ypos);
-		camera.mouse_callback(window, xpos, ypos);
+		camera.processInput(window, 0.25f);
+		camera.mouseInput(window, 0.1f);
 	
 		shader.setMat4("viewMatrix", camera.getCamera());
 		shader.setVec3("viewPos", camera.getPosition());
-		shader.setMat4("modelMatrix", obj1.getMatrix());
 
 		//obj1.rotate(glm::radians(1.0f), glm::vec3(0, 1, 0));
+		
+		//naètení ID a pozice ve svìtových souøadnicích
+		GLbyte color[4];
+		GLfloat depth;
+		GLuint index;
+
+		GLint x = (GLint)cursor.x;
+		GLint y = (GLint)cursor.y;
+
+		int newy = (int)Application::getInstance().;
+
+		glReadPixels(x, newy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
+		glReadPixels(x, newy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+		glReadPixels(x, newy, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
+
+		printf("Clicked on pixel % d, % d, color % 02hhx % 02hhx % 02hhx % 02hhx, depth %f, stencil index % u\n", x, y, color[0], color[1], color[2], color[3], depth, index);
+
+
+		for (int i = 0; i < 4; i++) {
+			glStencilFunc(GL_ALWAYS, objs[i].getId(), 0xFF);
+			shader.setMat4("modelMatrix", objs[i].getMatrix());
+			objs[i].render(2880);
+			glBindVertexArray(0);
+		}
+		/*
+		shader.setMat4("modelMatrix", obj1.getMatrix());
 		obj1.render(2880);
 		shader.setMat4("modelMatrix", obj2.getMatrix());
 		obj2.render(2880);
 		shader.setMat4("modelMatrix", obj3.getMatrix());
 		obj3.render(2880);
 		shader.setMat4("modelMatrix", obj4.getMatrix());
-		obj4.render(2880);
-		glBindVertexArray(0);
+		obj4.render(2880);*/
+		
 
 		//obj1.rotate(glm::radians(1.0f), glm::vec3(0, 0, 1));
 		// update other events like input handling

@@ -45,7 +45,7 @@ public:
 
 	void moveLeft();
 	void processInput(GLFWwindow* window, float cameraSpeed);
-	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+	void mouseInput(GLFWwindow* window, double sensitivity);
 	void moveUp();
 
 

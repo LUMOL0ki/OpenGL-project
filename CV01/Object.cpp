@@ -3,6 +3,7 @@
 Object::Object(glm::vec3 position)
 {
 	this->position = position;
+	m_matrix = glm::translate(m_matrix, position);
 }
 
 Object::~Object()

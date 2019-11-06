@@ -47,8 +47,11 @@ void Camera::updateCameraVectors()
 	up = glm::normalize(glm::cross(right, this->target));
 }
 
-void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+void Camera::mouseInput(GLFWwindow* window, double sensitivity)
 {
+	double xpos;
+	double ypos;
+	glfwGetCursorPos(window, &xpos, &ypos);
 	if (firstMouse)
 	{
 		lastX = xpos;
@@ -61,7 +64,6 @@ void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	lastX = xpos;
 	lastY = ypos;
 
-	double sensitivity = 0.05;
 	xoffset *= sensitivity;
 	yoffset *= sensitivity;
 

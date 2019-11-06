@@ -1,5 +1,5 @@
-﻿D:\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (CV01.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Camera.cpp
-D:\Documents\GitHub\OpenGL-project\CV01\Camera.cpp(68,16): warning C4244: +=: double se převádí na float; může dojít ke ztrátě dat.
-D:\Documents\GitHub\OpenGL-project\CV01\Camera.cpp(69,18): warning C4244: +=: double se převádí na float; může dojít ke ztrátě dat.
-  CV01.vcxproj -> D:\Documents\GitHub\OpenGL-project\x64\Debug\OpenGL.exe
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (CV01.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Application.cpp
+C:\Github\OpenGL-project\CV01\Application.cpp(9,35): warning C4244: argument: float se převádí na int; může dojít ke ztrátě dat.
+C:\Github\OpenGL-project\CV01\Application.cpp(9,28): warning C4244: argument: float se převádí na int; může dojít ke ztrátě dat.
+  CV01.vcxproj -> C:\Github\OpenGL-project\x64\Debug\OpenGL.exe
