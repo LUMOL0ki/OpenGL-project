@@ -1,6 +1,3 @@
-#include "Mesh.h"
-
-
 const float sphere[] = {
 -0.831470 , -0.555570 , 0.000000 , -0.833338 , -0.552751 , 0.000000,
 -0.923880 , -0.382683 , 0.000000 , -0.924741 , -0.380535 , 0.000000,
@@ -2883,17 +2880,3 @@ const float sphere[] = {
 -0.375330 , -0.923880 , 0.074658 , -0.380413 , -0.921690 , 0.075655,
 -0.555570 , -0.831470 , 0.000000 , -0.559771 , -0.828639 , 0.000000
 };
-
-
-#pragma once
-class Sphere : public Mesh
-{
-private:
-	//const float vertices[];
-protected:
-	const float* vertices;
-	GLsizei count = 2880;
-public:
-	Sphere(glm::vec3 position);
-};
-

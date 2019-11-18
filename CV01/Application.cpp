@@ -80,11 +80,35 @@ void Application::window_size_callback(GLFWwindow* window, int width, int height
 
 void Application::cursor_pos_callback(GLFWwindow * window, double mouseX, double mouseY)
 {
+	glfwGetCursorPos(window, &xpos, &ypos);
 	printf("cursor_pos_callback %d, %d;\n", (int)mouseX, (int)mouseY/*, (int)clickX, (int)clickY*/);
 }
 
+void Application::mouse_button_callback(GLFWwindow* window, int button, int action, int mode)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		//naètení ID a pozice ve svìtových souøadnicích
+		GLbyte color[4];
+		GLfloat depth;
+		GLuint index;
+
+		GLint x = (GLint)Application::getInstance()->width/2;
+		GLint y = (GLint)Application::getInstance()->height/2;
+
+		//int newy = (int)Application::getInstance()->width - y;
+
+		glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
+		glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+		glReadPixels(x, y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
+		printf("Clicked on pixel % d, % d, color % 02hhx % 02hhx % 02hhx % 02hhx, depth %f, stencil index % u\n", x, y, color[0], color[1], color[2], color[3], depth, index);
+	}
+	printf("mouseButton_callback [%d,%d,%d]\n", button, action, mode);
+}
 void Application::button_callback(GLFWwindow* window, int button, int action, int mode) {
-	if (action == GLFW_PRESS) printf("button_callback [%d,%d,%d]\n", button, action, mode);
+	if (action == GLFW_PRESS) 
+		printf("button_callback [%d,%d,%d]\n", button, action, mode);
+
 }
 
 void Application::getVersionInfo()
@@ -99,24 +123,7 @@ void Application::getVersionInfo()
 	glfwGetVersion(&major, &minor, &revision);
 	printf("Using GLFW %i.%i.%i\n", major, minor, revision);
 }
-/*
-void Application::inputInfo(GLFWwindow* &window) {
-	// Sets the key callback
-	glfwSetKeyCallback(window, Application::getInstance()->key_callback);
 
-	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double mouseXPos, double mouseYPos)
-		-> void {Application::getInstance()->cursor_pos_callback(window, mouseXPos, mouseYPos); });
-
-	glfwSetMouseButtonCallback(window, Application::getInstance()->button_callback);
-
-	glfwSetWindowFocusCallback(window, Application::getInstance()->window_focus_callback);
-
-	glfwSetWindowIconifyCallback(window, Application::getInstance()->window_iconify_callback);
-
-	glfwSetWindowSizeCallback(window, Application::getInstance()->window_size_callback);
-
-}
-*/
 void Application::callBackFunctions() {
 
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) -> void {Application::getInstance()->key_callback(window, key, scancode, action, mods); });
@@ -125,9 +132,15 @@ void Application::callBackFunctions() {
 
 	glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height) -> void {Application::getInstance()->window_size_callback(window, width, height); });
 
-	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double mouseXPos, double mouseYPos) -> void {Application::getInstance()->cursor_pos_callback(window, mouseXPos, mouseYPos); });
+	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double mouseXPos, double mouseYPos) 
+		-> void {
+			Application::getInstance()->cursor_pos_callback(window, mouseXPos, mouseYPos); 
+		});
 
-	//glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods) -> void {Application::getInstance()->mouse_button_callback(window, button, action, mods); });
+	glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods) 
+		-> void {
+			Application::getInstance()->mouse_button_callback(window, button, action, mods); 
+		});
 
 	glfwSetWindowFocusCallback(window, [](GLFWwindow* window, int focused) -> void {Application::getInstance()->window_focus_callback(window, focused); });
 
@@ -138,25 +151,15 @@ void Application::callBackFunctions() {
 
 void Application::draw(Shader shader) {
 	Light light = Light(glm::vec3(0.0f, 0.0f, 0.0f));
+	Light light2 = Light(glm::vec3(4.0f, 0.0f, 0.0f));
 	Mesh objs[4] = {
-	Mesh(glm::vec3(2.0f, 0.0f, 0.0f), 1),
-	Mesh(glm::vec3(-2.0f, 0.0f, 0.0f), 2),
-	Mesh(glm::vec3(0.0f, 2.0f, 0.0f), 3),
-	Mesh(glm::vec3(0.0f, -2.0f, 0.0f), 4)
+	Mesh (glm::vec3(2.0f, 0.0f, 0.0f)),
+	Mesh (glm::vec3(-2.0f, 0.0f, 0.0f)),
+	Mesh (glm::vec3(0.0f, 2.0f, 0.0f)),
+	Mesh (glm::vec3(0.0f, -2.0f, 0.0f))
 	};
-
-	Mesh obj1 = Mesh(glm::vec3(0.0f, 0.0f, 0.0f), 1);
-	Mesh obj2 = Mesh(glm::vec3(0.0f, 0.0f, 0.0f), 2);
-	Mesh obj3 = Mesh(glm::vec3(0.0f, 0.0f, 0.0f), 3);
-	Mesh obj4 = Mesh(glm::vec3(0.0f, 0.0f, 0.0f), 4);
-
 	Renderer renderer = Renderer();
-	obj1.translate(glm::vec3(2.0f, 0.0f, 0.0f));
-	//obj1.rotate(-50, glm::vec3(0, 0, 1));
-	obj2.translate(glm::vec3(-2.0f, 0.0f, 0.0f));
 	
-	obj3.translate(glm::vec3(0.0f, 2.0f, 0.0f));
-	obj4.translate(glm::vec3(0.0f, -2.0f, 0.0f));
 	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
 	
@@ -172,25 +175,25 @@ void Application::draw(Shader shader) {
 	//pøidání ID do stencil bufferu
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
-	//model = Object::scale(model, glm::vec3(0.5f));
+	
 	while (!glfwWindowShouldClose(window))
 	{
 		// clear color and depth buffer
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//obj.translate(glm::vec3(-0.005f, 0.0f, 0.0f));
-		//model = glm::translate(model, glm::vec3(-0.005f, 0.0f, 0.0f));
-		//obj.rotate(0.01f, glm::vec3(0.0f, 0.0f, 1.0f));
-		//camera.rotate(0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
 		//Render
 		
 		shader.use();
-		//camera.translate(glm::vec3(0.0f, 0.0f, 0.02f));
-		shader.setVec3("lightPos", glm::vec3(0, 0, 0));
-		shader.setVec3("lightColor", glm::vec3(1.5, 1.5, 1.5));
-		shader.setVec3("modelColor", glm::vec3(0.5, 0.1, 0.1));
+		//shader.setVec3("lightPos", glm::vec3(0, 0, 0));
+		//shader.setVec3("lightColor", glm::vec3(1.5, 1.5, 1.5));
+
+		shader.setVec3("lights[0].lightPos", light.getPosition());
+		shader.setVec3("lights[0].lightColor", glm::vec3(1.5, 1.5, 1.5)); 
+		shader.setVec3("lights[1].lightPos", light2.getPosition());
+		shader.setVec3("lights[1].lightColor", glm::vec3(1.5, 1.5, 1.5));
+		shader.setInt("numberOfLights", 2);
+		//shader.setVec3("modelColor", glm::vec3(0.5, 0.1, 0.1));
 		
 		shader.setMat4("projectionMatrix", projection);
 		camera.processInput(window, 0.25f);
@@ -198,42 +201,16 @@ void Application::draw(Shader shader) {
 	
 		shader.setMat4("viewMatrix", camera.getCamera());
 		shader.setVec3("viewPos", camera.getPosition());
-
-		//obj1.rotate(glm::radians(1.0f), glm::vec3(0, 1, 0));
 		
-		//naètení ID a pozice ve svìtových souøadnicích
-		GLbyte color[4];
-		GLfloat depth;
-		GLuint index;
-
-		GLint x = (GLint)cursor.x;
-		GLint y = (GLint)cursor.y;
-
-		int newy = (int)Application::getInstance().;
-
-		glReadPixels(x, newy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
-		glReadPixels(x, newy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
-		glReadPixels(x, newy, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
-
-		printf("Clicked on pixel % d, % d, color % 02hhx % 02hhx % 02hhx % 02hhx, depth %f, stencil index % u\n", x, y, color[0], color[1], color[2], color[3], depth, index);
-
+		
 
 		for (int i = 0; i < 4; i++) {
-			glStencilFunc(GL_ALWAYS, objs[i].getId(), 0xFF);
+			glStencilFunc(GL_ALWAYS, objs[i].getVAO(), 0xFF);
+			
 			shader.setMat4("modelMatrix", objs[i].getMatrix());
-			objs[i].render(2880);
+			objs[i].render(6);
 			glBindVertexArray(0);
 		}
-		/*
-		shader.setMat4("modelMatrix", obj1.getMatrix());
-		obj1.render(2880);
-		shader.setMat4("modelMatrix", obj2.getMatrix());
-		obj2.render(2880);
-		shader.setMat4("modelMatrix", obj3.getMatrix());
-		obj3.render(2880);
-		shader.setMat4("modelMatrix", obj4.getMatrix());
-		obj4.render(2880);*/
-		
 
 		//obj1.rotate(glm::radians(1.0f), glm::vec3(0, 0, 1));
 		// update other events like input handling

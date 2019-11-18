@@ -13,6 +13,7 @@ private:
 	GLFWwindow* window;
 	static Application* instance;
 	float width, height;
+	double xpos, ypos;
 	Application();
 public:
 	
@@ -25,7 +26,8 @@ public:
 	static void window_iconify_callback(GLFWwindow * window, int iconified);
 	static void key_callback(GLFWwindow * window, int key, int scancode, int action, int mods);
 	static void window_size_callback(GLFWwindow * window, int width, int height);
-	static void cursor_pos_callback(GLFWwindow* window, double mouseX, double mouseY);
+	void cursor_pos_callback(GLFWwindow* window, double mouseX, double mouseY);
+	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	static void button_callback(GLFWwindow * window, int button, int action, int mode);
 	static void getVersionInfo();
 	//static void inputInfo(GLFWwindow* &window);

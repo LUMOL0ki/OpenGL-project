@@ -15,6 +15,7 @@
 //Include the standard C++ headers  
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h> 
 #include <iostream>	// std::cout std::cin
 #include <fstream>	// std::ifstream
 #include <string>	// std::string
@@ -28,10 +29,10 @@ private:
 	GLuint shaderProgram, vs, fs;
 	Camera *m_camera;
 	GLuint initShaderProgram(GLuint vertexShader, GLuint fragmentShader);
-	void createShader(const std::string& vertex_shader, const std::string& fragment_shader);	GLuint compileShader(GLuint type, const std::string & source);
+	void createShader();	GLuint compileShader(GLuint type, const std::string & source);
 public:
 	//Shader();
-	Shader(Camera *camera, const std::string& vertex_shader, const std::string& fragment_shader);
+	Shader(Camera *camera);
 	GLuint GetShaderProgram();
 	
 	Camera getCamera();
@@ -46,6 +47,7 @@ public:
 	void setVec3(const std::string& name, glm::vec3 vector);
 	void setVec4(const std::string& name, glm::vec4 vector);
 	void setMat4(const std::string& name, glm::mat4 matrix);
+	void setLight(const std::string& name, bool value);
 	~Shader();
 };
 

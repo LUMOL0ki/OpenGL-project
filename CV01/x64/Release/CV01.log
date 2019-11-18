@@ -1,0 +1,20 @@
+﻿  Application.cpp
+  Camera.cpp
+D:\Documents\GitHub\OpenGL-project\CV01\Application.h(1,10): fatal error C1083: Nejde otevřít soubor zahrnout: GL/glew.h: No such file or directory
+  Light.cpp
+D:\Documents\GitHub\OpenGL-project\CV01\Camera.h(1,10): fatal error C1083: Nejde otevřít soubor zahrnout: glm/vec2.hpp: No such file or directory
+  Mesh.cpp
+D:\Documents\GitHub\OpenGL-project\CV01\Object.h(2,10): fatal error C1083: Nejde otevřít soubor zahrnout: glm/mat4x4.hpp: No such file or directory
+  Object.cpp
+D:\Documents\GitHub\OpenGL-project\CV01\Mesh.h(1,10): fatal error C1083: Nejde otevřít soubor zahrnout: GL/glew.h: No such file or directory
+  Plain.cpp
+D:\Documents\GitHub\OpenGL-project\CV01\Object.h(2,10): fatal error C1083: Nejde otevřít soubor zahrnout: glm/mat4x4.hpp: No such file or directory
+  Renderer.cpp
+D:\Documents\GitHub\OpenGL-project\CV01\Mesh.h(1,10): fatal error C1083: Nejde otevřít soubor zahrnout: GL/glew.h: No such file or directory
+  Core.cpp
+D:\Documents\GitHub\OpenGL-project\CV01\Object.h(2,10): fatal error C1083: Nejde otevřít soubor zahrnout: glm/mat4x4.hpp: No such file or directory
+  Shader.cpp
+D:\Documents\GitHub\OpenGL-project\CV01\Core.cpp(2,10): fatal error C1083: Nejde otevřít soubor zahrnout: GL/glew.h: No such file or directory
+  Sphere.cpp
+D:\Documents\GitHub\OpenGL-project\CV01\Shader.h(1,10): fatal error C1083: Nejde otevřít soubor zahrnout: GL/glew.h: No such file or directory
+D:\Documents\GitHub\OpenGL-project\CV01\Mesh.h(1,10): fatal error C1083: Nejde otevřít soubor zahrnout: GL/glew.h: No such file or directory
