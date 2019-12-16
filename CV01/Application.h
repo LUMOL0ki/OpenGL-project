@@ -13,7 +13,7 @@ private:
 	GLFWwindow* window;
 	static Application* instance;
 	float width, height;
-	double xpos, ypos;
+	double xpos = 0, ypos = 0;
 	Application();
 public:
 	

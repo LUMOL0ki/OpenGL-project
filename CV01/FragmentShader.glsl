@@ -1,6 +1,7 @@
 #version 330
 
 #define MAX_LIGHTS 4 
+#define MAX_TEXTURES 24
 struct light
 {
   vec3 lightPos;

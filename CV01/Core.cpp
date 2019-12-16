@@ -57,7 +57,6 @@ int main(void)
 	}*/
 
 	app->callBackFunctions();
-	
 
 	Camera camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f));
 	Shader shader = Shader(&camera);

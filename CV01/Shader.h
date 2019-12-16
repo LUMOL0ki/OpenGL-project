@@ -28,14 +28,17 @@ class Shader
 private:
 	GLuint shaderProgram, vs, fs;
 	Camera *m_camera;
-	GLuint initShaderProgram(GLuint vertexShader, GLuint fragmentShader);
-	void createShader();	GLuint compileShader(GLuint type, const std::string & source);
+	void createShader();
 public:
 	//Shader();
 	Shader(Camera *camera);
 	GLuint GetShaderProgram();
 	
 	Camera getCamera();
+
+	void addTexture(const char *path);
+
+	void Texture(const char* path);
 
 	void use();
 

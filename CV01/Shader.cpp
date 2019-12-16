@@ -13,11 +13,11 @@ Shader::Shader(Camera *camera)
 	createShader();
 	glUseProgram(shaderProgram);
 
-	GLuint textureID = SOIL_load_OGL_texture("wall.JPG", SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-
 	//Bind the first texture to the first texture unit.
 	glActiveTexture(GL_TEXTURE0);
+	GLuint textureID = SOIL_load_OGL_texture("test.png", SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
 	glBindTexture(GL_TEXTURE_2D, textureID);
+	textureID++;
 
 	//Set texture unit to fragment shader
 	GLint uniformID = glGetUniformLocation(shaderProgram, "textureUnitID");
@@ -42,6 +42,37 @@ Camera Shader::getCamera()
 	return *m_camera;
 }
 
+void Shader::addTexture(const char *path)
+{
+	GLuint textureID = SOIL_load_OGL_texture(path, SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	textureID++;
+}
+/*
+void Shader::Texture(const char* path) {
+	/*cv::Mat image;
+	image = cv::imread("../wooden_planks.jpg", 1); //load the image (RGB format)
+	cv::imshow("im1",image);
+	cv::flip(image, image, 0); //corect orientation
+	
+	GLuint textureID = SOIL_load_OGL_texture(path, SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+	glGenTextures(1, &textureID); //reference to texture
+	glActiveTexture(GL_TEXTURE0); //active texture unit 0
+	glBindTexture(GL_TEXTURE_2D, textureID); //object texture_id is 2D texture
+	glTexImage2D(GL_TEXTURE_2D, // Type of texture 1D, 2D, 3D
+		0, // Pyramid level (for mip-mapping) - 0 is the top level
+		GL_RGB, // Internal colour format to convert to
+		image.cols, // Image width i.e. 640
+		image.rows, // Image height i.e. 480
+		0, // Border width in pixels (can either be 1 or 0)
+		GL_BGR, // Input format (GL_RGB, GL_RGBA, GL_BGR etc.)
+		GL_UNSIGNED_BYTE, // Image data type
+		image.ptr()); // The actual image data itself
+	glGenerateMipmap(GL_TEXTURE_2D); //Generate mipmaps now!!!
+	image.release(); //release image file
+	glUniform1i(glGetUniformLocation(shaderProgram, "textura"), 0);
+}
+*/
 void Shader::createShader()
 {
 	ShaderLoader* loader = new ShaderLoader();

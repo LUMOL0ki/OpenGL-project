@@ -1,5 +1,7 @@
 #include "Application.h"
 #include "Light.h"
+#include <soil.h>
+#include <filesystem>
 Application* Application::instance = 0;
 
 Application::Application()
@@ -7,6 +9,8 @@ Application::Application()
 	width = 1080;
 	height = 800;
 	window = glfwCreateWindow(width, height, "ZPG", NULL, NULL);
+	xpos = 0;
+	ypos = 0;
 }
 
 
@@ -150,16 +154,25 @@ void Application::callBackFunctions() {
 }
 
 void Application::draw(Shader shader) {
-	Light light = Light(glm::vec3(0.0f, 0.0f, 0.0f));
-	Light light2 = Light(glm::vec3(4.0f, 0.0f, 0.0f));
-	Mesh objs[4] = {
-	Mesh (glm::vec3(2.0f, 0.0f, 0.0f)),
-	Mesh (glm::vec3(-2.0f, 0.0f, 0.0f)),
-	Mesh (glm::vec3(0.0f, 2.0f, 0.0f)),
-	Mesh (glm::vec3(0.0f, -2.0f, 0.0f))
+	Light light = Light(glm::vec3(20.0f, 0.0f, 0.0f));
+	Light light2 = Light(glm::vec3(4.0f, 20.0f, 0.0f));
+	/*
+	const int lightsnum = 2;
+
+	Light lights[lightsnum] = {
+		Light(glm::vec3(0.0f, 0.0f, 0.0f)),
+		Light(glm::vec3(4.0f, 0.0f, 0.0f))
+	};
+	*/
+	const int models = 2;
+
+	Mesh objs[models] = {
+	Mesh (glm::vec3(0.0f, 0.0f, 0.0f)),
+	Mesh (glm::vec3(0.0f, 0.0f, 2.0f), "../Models/test.obj")
 	};
 	Renderer renderer = Renderer();
-	
+	objs[0].scale(60);
+
 	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
 	
@@ -167,11 +180,18 @@ void Application::draw(Shader shader) {
 
 	//camera.rotate(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	//camera.translate(glm::vec3(8.0f, 0.0f, 0.0f));
-	camera.translate(glm::vec3(0.0f, 0.0f, -8.0f));
+	camera.translate(glm::vec3(-10.0f, 1.2f, -5.0f));
 	GLint modelMatrixID = glGetUniformLocation(shader.GetShaderProgram(), "modelMatrix");
 
-	glEnable(GL_DEPTH_TEST);
+	glActiveTexture(GL_TEXTURE1);
+	shader.addTexture("wall.jpg");
+	glActiveTexture(GL_TEXTURE2);
+	shader.addTexture("../Models/sky/skydome.png");
+	glActiveTexture(GL_TEXTURE3);
+	shader.addTexture("../Models/sky/fulldome3.jpg");
 
+	Mesh sky = Mesh(camera.getPosition(), "../Models/sky/skydome.obj");
+	sky.scale(glm::vec3(100, 100, 100));
 	//pøidání ID do stencil bufferu
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
@@ -181,7 +201,6 @@ void Application::draw(Shader shader) {
 		// clear color and depth buffer
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		//Render
 		
 		shader.use();
@@ -198,20 +217,29 @@ void Application::draw(Shader shader) {
 		shader.setMat4("projectionMatrix", projection);
 		camera.processInput(window, 0.25f);
 		camera.mouseInput(window, 0.1f);
-	
+		glDisable(GL_DEPTH_TEST);
+		shader.setMat4("modelMatrix", sky.getMatrix());
+		sky.setPosition(camera.getPosition());
+		glActiveTexture(GL_TEXTURE1);
+
+		sky.render();
+		//glBindVertexArray(0);
+		glEnable(GL_DEPTH_TEST);
 		shader.setMat4("viewMatrix", camera.getCamera());
 		shader.setVec3("viewPos", camera.getPosition());
 		
-		
-
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < models; i++) {
 			glStencilFunc(GL_ALWAYS, objs[i].getVAO(), 0xFF);
 			
 			shader.setMat4("modelMatrix", objs[i].getMatrix());
 			objs[i].render(6);
 			glBindVertexArray(0);
 		}
-
+		shader.setMat4("modelMatrix", objs[1].getMatrix());
+		objs[1].render();
+		
+		//shader.setMat4("modelMatrix", objs[4].getMatrix());
+		//objs[5].render();
 		//obj1.rotate(glm::radians(1.0f), glm::vec3(0, 0, 1));
 		// update other events like input handling
 		glfwPollEvents();

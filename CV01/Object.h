@@ -20,11 +20,13 @@ public:
 	glm::mat4 getMatrix();
 
 	glm::vec3 getPosition();
+	void setPosition(glm::vec3 position);
 
 	glm::mat4 translate(glm::vec3 shift);
 	static glm::mat4 translate(glm::mat4 model, glm::vec3 shift);
 	glm::mat4 rotate(float angle, glm::vec3 shift);
 	static glm::mat4 rotate(glm::mat4 model, float angle, glm::vec3 shift);
+	glm::mat4 scale(int scale);
 	glm::mat4 scale(glm::vec3 scale);
 	static glm::mat4 scale(glm::mat4 model, glm::vec3 scale);
 };
