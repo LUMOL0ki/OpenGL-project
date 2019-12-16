@@ -44,8 +44,7 @@ bool loadContect(int object, const float vertices[]) {
 
 int main(void)
 {
-	Application* app;
-	app = app->getInstance();
+	Application* app = app->getInstance();
 	if (!app->init(&width, &height)) {
 		exit(EXIT_FAILURE);
 	}
@@ -57,11 +56,7 @@ int main(void)
 	}*/
 
 	app->callBackFunctions();
-
-	Camera camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f));
-	Shader shader = Shader(&camera);
-
-	app->draw(shader);
+	app->draw();
 	
 	glfwDestroyWindow(window);
 	glfwTerminate();

@@ -9,19 +9,21 @@ Shader::Shader()
 */
 Shader::Shader(Camera *camera)
 {
+	init(camera, ShaderType::nonmettalic);
+}
+
+Shader::Shader(Camera* camera, ShaderType shaderType)
+{
+	init(camera, shaderType);
+}
+
+void Shader::init(Camera *camera, ShaderType shaderType) {
 	this->m_camera = camera;
-	createShader();
+	this->shaderType = shaderType;
+
+	createShader(this->shaderType);
 	glUseProgram(shaderProgram);
-
-	//Bind the first texture to the first texture unit.
-	glActiveTexture(GL_TEXTURE0);
-	GLuint textureID = SOIL_load_OGL_texture("test.png", SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-	textureID++;
-
 	//Set texture unit to fragment shader
-	GLint uniformID = glGetUniformLocation(shaderProgram, "textureUnitID");
-	glUniform1i(uniformID, 0);
 }
 
 Shader::~Shader()
@@ -42,46 +44,127 @@ Camera Shader::getCamera()
 	return *m_camera;
 }
 
-void Shader::addTexture(const char *path)
+
+
+GLuint Shader::addTexture(const char *path)
+{
+	GLuint tex;
+	
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	int width, height;
+	unsigned char* image;
+	//Bind the first texture to the first texture unit.
+	image = SOIL_load_image(path, &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+		GL_UNSIGNED_BYTE, image);
+	glGenerateMipmap(GL_TEXTURE_2D); //Generate mipmaps now!!!
+	SOIL_free_image_data(image);
+	//Set texture unit to fragment shader
+
+	return tex;
+}
+
+GLuint Shader::addSkyBox(std::vector<std::string> faces) {
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < faces.size(); i++)
+	{
+		unsigned char* image = SOIL_load_image(faces[i].c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+		if (image)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+				0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image
+			);
+			SOIL_free_image_data(image);
+		}
+		else
+		{
+			std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+			SOIL_free_image_data(image);
+		}
+	}
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	return textureID;
+}
+
+void Shader::getSkyBox(int id) 
+{
+	GLint uniformID = glGetUniformLocation(shaderProgram, "skybox");
+	glUniform1i(uniformID, id);
+}
+
+void Shader::getTexture(int id) {
+	GLint uniformID = glGetUniformLocation(shaderProgram, "textureUnitID");
+	glUniform1i(uniformID, id);
+}
+
+void Shader::Texture(const char* path) 
 {
 	GLuint textureID = SOIL_load_OGL_texture(path, SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
 	glBindTexture(GL_TEXTURE_2D, textureID);
-	textureID++;
 }
-/*
-void Shader::Texture(const char* path) {
-	/*cv::Mat image;
-	image = cv::imread("../wooden_planks.jpg", 1); //load the image (RGB format)
-	cv::imshow("im1",image);
-	cv::flip(image, image, 0); //corect orientation
-	
-	GLuint textureID = SOIL_load_OGL_texture(path, SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-	glGenTextures(1, &textureID); //reference to texture
-	glActiveTexture(GL_TEXTURE0); //active texture unit 0
-	glBindTexture(GL_TEXTURE_2D, textureID); //object texture_id is 2D texture
-	glTexImage2D(GL_TEXTURE_2D, // Type of texture 1D, 2D, 3D
-		0, // Pyramid level (for mip-mapping) - 0 is the top level
-		GL_RGB, // Internal colour format to convert to
-		image.cols, // Image width i.e. 640
-		image.rows, // Image height i.e. 480
-		0, // Border width in pixels (can either be 1 or 0)
-		GL_BGR, // Input format (GL_RGB, GL_RGBA, GL_BGR etc.)
-		GL_UNSIGNED_BYTE, // Image data type
-		image.ptr()); // The actual image data itself
-	glGenerateMipmap(GL_TEXTURE_2D); //Generate mipmaps now!!!
-	image.release(); //release image file
-	glUniform1i(glGetUniformLocation(shaderProgram, "textura"), 0);
-}
-*/
-void Shader::createShader()
+
+void Shader::createShader(ShaderType shaderType)
 {
 	ShaderLoader* loader = new ShaderLoader();
-	shaderProgram = loader->loadShader("./VertexShader.glsl", "./FragmentShader.glsl");
+	switch (shaderType)
+	{
+	case nonmettalic:
+		shaderProgram = loader->loadShader("./VertexShader.glsl", "./FragmentShader.glsl");
+		break;
+	case skybox:
+		shaderProgram = loader->loadShader("./VertexSkyBox.glsl", "./FragmentSkyBox.glsl");
+		break;
+	case depth:
+		shaderProgram = loader->loadShader("./VertexSkyBox.glsl", "./FragmentSkyBox.glsl");
+	}
 }
 // activate the shader
 // ------------------------------------------------------------------------
 void Shader::use()
 {
+	/*GLuint framebuffer = 0, shadowMap = 0;
+	if (framebuffer == 0) glGenFramebuffers(1, &framebuffer);
+	if (shadowMap != 0) glDeleteTextures(1, &shadowMap);
+
+	glActiveTexture(GL_TEXTURE1);
+	glGenTextures(1, &shadowMap);
+	glBindTexture(GL_TEXTURE_2D, shadowMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1024,
+		1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	//Set compare mode and function for shadow sampling
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		printf("ERROR: Something's wrong with framebuffer.\n");
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//definujeme oblast a vlastnosti výpoètu stínu
+	glm::mat4 depthProjectionMatrix;
+	glm::mat4 depthViewMatrix = getCamera().getCamera();
+	*/
 	glUseProgram(shaderProgram);
 }
 

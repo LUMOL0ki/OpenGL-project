@@ -111,8 +111,6 @@ void Mesh::load(std::string fileName)
 					pIndices[i * 3 + 2] = mesh->mFaces[i].mIndices[2];
 				}
 			}
-
-
 			glGenVertexArrays(1, &VAO);
 			glGenBuffers(1, &VBO);
 			glGenBuffers(1, &IBO);

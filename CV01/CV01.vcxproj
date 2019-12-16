@@ -92,12 +92,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\Libraries\assimp140\assimp\include;..\Libraries\cwc\include;..\Libraries\glew\glew-2.1.0\include;..\Libraries\glm\glm\glm;..\Libraries\glm;..\Libraries\glm\glm;..\Libraries\glfw\glfw-3.3.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Libraries\cwc\include;..\Libraries\glew\glew-2.1.0\include;..\Libraries\glm\glm\glm;..\Libraries\glm;..\Libraries\glm\glm;..\Libraries\glfw\glfw-3.3.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32s.lib;glfw3.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Github\OpenGL-project\Libraries\assimp140\assimp\lib\x64\v141\Release;C:\Github\OpenGL-project\Libraries\assimp140\assimp\bin\x64\v141\Release;..\Libraries\glfw\glfw-3.3.bin.WIN64\lib-vc2019;..\Libraries\glew\glew-2.1.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Libraries\glfw\glfw-3.3.bin.WIN64\lib-vc2019;..\Libraries\glew\glew-2.1.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,9 +141,13 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <None Include="FragmentDepth.glsl" />
     <None Include="FragmentShader.glsl" />
+    <None Include="FragmentSkyBox.glsl" />
     <None Include="packages.config" />
+    <None Include="VertexDepth.glsl" />
     <None Include="VertexShader.glsl" />
+    <None Include="VertexSkyBox.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Shaders\ShaderLoader.h" />

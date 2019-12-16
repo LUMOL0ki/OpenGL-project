@@ -8,7 +8,6 @@
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
 
-
 //#include "glutwindow.h"
 //#include "glsl.h"
 
@@ -20,23 +19,41 @@
 #include <fstream>	// std::ifstream
 #include <string>	// std::string
 #include <sstream>	// std::stringstream
+#include <vector>
 
 #pragma once
 class Camera;
 class Shader
 {
+public:
+	enum ShaderType
+	{
+		mettalic,
+		nonmettalic,
+		skybox,
+		depth
+	};
 private:
 	GLuint shaderProgram, vs, fs;
 	Camera *m_camera;
-	void createShader();
+	ShaderType shaderType;
+	void createShader(ShaderType shaderType);
 public:
 	//Shader();
 	Shader(Camera *camera);
+	Shader(Camera* camera, ShaderType shaderType);
+	void init(Camera* camera, ShaderType shaderType);
 	GLuint GetShaderProgram();
 	
 	Camera getCamera();
 
-	void addTexture(const char *path);
+	GLuint addTexture(const char *path);
+
+	GLuint addSkyBox(std::vector<std::string> faces);
+
+	void getSkyBox(int id);
+
+	void getTexture(int id);
 
 	void Texture(const char* path);
 

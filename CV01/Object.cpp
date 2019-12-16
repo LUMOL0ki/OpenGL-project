@@ -43,7 +43,8 @@ glm::mat4 Object::translate(glm::mat4 m_matrix, glm::vec3 shift)
 
 glm::mat4 Object::rotate(float angle, glm::vec3 shift)
 {
-	m_matrix = glm::rotate(m_matrix, angle, shift);
+	
+	m_matrix = glm::rotate(m_matrix, glm::radians(angle), shift);
 	return m_matrix;
 }
 

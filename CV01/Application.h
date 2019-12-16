@@ -32,6 +32,6 @@ public:
 	static void getVersionInfo();
 	//static void inputInfo(GLFWwindow* &window);
 	void callBackFunctions();
-	void draw(Shader shader);
+	void draw();
 };
 

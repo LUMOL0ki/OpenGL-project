@@ -153,7 +153,24 @@ void Application::callBackFunctions() {
 
 }
 
-void Application::draw(Shader shader) {
+void Application::draw() {
+
+	Shader shader = Shader(&Camera(glm::vec3(0.0f, 0.0f, 0.0f)));
+	Shader skyBox = Shader(&shader.getCamera(), Shader::ShaderType::skybox);
+
+	std::vector<std::string> faces
+	{
+			"Textures/posx.jpg",
+			"Textures/negx.jpg",
+			"Textures/posy.jpg",
+			"Textures/negy.jpg",
+			"Textures/posz.jpg",
+			"Textures/negz.jpg"
+	};
+	glActiveTexture(GL_TEXTURE0);
+	GLuint skyID=skyBox.addSkyBox(faces);
+	Mesh sky = Mesh(glm::vec3(0.0f, 0.0f, 0.0f), "../Models/skybox.obj");
+
 	Light light = Light(glm::vec3(20.0f, 0.0f, 0.0f));
 	Light light2 = Light(glm::vec3(4.0f, 20.0f, 0.0f));
 	/*
@@ -164,14 +181,23 @@ void Application::draw(Shader shader) {
 		Light(glm::vec3(4.0f, 0.0f, 0.0f))
 	};
 	*/
-	const int models = 2;
+	const int models = 6;
 
 	Mesh objs[models] = {
 	Mesh (glm::vec3(0.0f, 0.0f, 0.0f)),
-	Mesh (glm::vec3(0.0f, 0.0f, 2.0f), "../Models/test.obj")
+	Mesh (glm::vec3(0.0f, 0.0f, 2.0f), "../Models/test.obj"),
+	Mesh(glm::vec3(-15.0f, 0.0f, -5.0f), "../Models/test.obj"),
+	Mesh(glm::vec3(-20.0f, 1.0f, -50.0f), "../Models/stone.obj"),
+	Mesh(glm::vec3(10.0f, 2.0f, -50.0f), "../Models/stone.obj"),
+	Mesh(glm::vec3(1.0f, 0.0f, -5.0f), "../Models/barrel.obj")
 	};
+
+	objs[2].rotate(-30, glm::vec3(0,1,0));
 	Renderer renderer = Renderer();
 	objs[0].scale(60);
+
+	objs[4].rotate(30, glm::vec3(0,1, 0));
+	objs[5].scale(0.5);
 
 	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
@@ -180,24 +206,28 @@ void Application::draw(Shader shader) {
 
 	//camera.rotate(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	//camera.translate(glm::vec3(8.0f, 0.0f, 0.0f));
-	camera.translate(glm::vec3(-10.0f, 1.2f, -5.0f));
+	camera.translate(glm::vec3(-10.0f, 1.2f, -15.0f));
 	GLint modelMatrixID = glGetUniformLocation(shader.GetShaderProgram(), "modelMatrix");
-
 	glActiveTexture(GL_TEXTURE1);
-	shader.addTexture("wall.jpg");
+	shader.Texture("Textures/test.png");
+	
 	glActiveTexture(GL_TEXTURE2);
-	shader.addTexture("../Models/sky/skydome.png");
-	glActiveTexture(GL_TEXTURE3);
-	shader.addTexture("../Models/sky/fulldome3.jpg");
+	
+	GLuint wall = shader.addTexture("Textures/ground_8K_Albedo.jpg");	
 
-	Mesh sky = Mesh(camera.getPosition(), "../Models/sky/skydome.obj");
-	sky.scale(glm::vec3(100, 100, 100));
+	glActiveTexture(GL_TEXTURE3);
+	shader.Texture("Textures/stone_4K_Albedo.jpg");
+	glActiveTexture(GL_TEXTURE4);
+	shader.Texture("Textures/barrel_4K_Albedo.jpg");
+
+	//shader.Texture("wall.jpg", 0);
 	//pøidání ID do stencil bufferu
+	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	
 	while (!glfwWindowShouldClose(window))
-	{
+	{	
 		// clear color and depth buffer
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -217,17 +247,10 @@ void Application::draw(Shader shader) {
 		shader.setMat4("projectionMatrix", projection);
 		camera.processInput(window, 0.25f);
 		camera.mouseInput(window, 0.1f);
-		glDisable(GL_DEPTH_TEST);
-		shader.setMat4("modelMatrix", sky.getMatrix());
-		sky.setPosition(camera.getPosition());
-		glActiveTexture(GL_TEXTURE1);
-
-		sky.render();
-		//glBindVertexArray(0);
-		glEnable(GL_DEPTH_TEST);
 		shader.setMat4("viewMatrix", camera.getCamera());
 		shader.setVec3("viewPos", camera.getPosition());
 		
+		shader.getTexture(2);
 		for (int i = 0; i < models; i++) {
 			glStencilFunc(GL_ALWAYS, objs[i].getVAO(), 0xFF);
 			
@@ -235,9 +258,30 @@ void Application::draw(Shader shader) {
 			objs[i].render(6);
 			glBindVertexArray(0);
 		}
+		shader.getTexture(1);
 		shader.setMat4("modelMatrix", objs[1].getMatrix());
 		objs[1].render();
-		
+		//objs[2].rotate(2, glm::vec3(0, 1, 0));
+		//objs[2].translate(glm::vec3(1, 0, 0));
+		shader.setMat4("modelMatrix", objs[2].getMatrix());
+		objs[2].render();
+		shader.getTexture(3);
+		shader.setMat4("modelMatrix", objs[3].getMatrix());
+		objs[3].render();
+		shader.setMat4("modelMatrix", objs[4].getMatrix());
+		objs[4].render();
+		shader.getTexture(4);
+		shader.setMat4("modelMatrix", objs[5].getMatrix());
+		//objs[5].render();
+		glDepthFunc(GL_LEQUAL); 
+		skyBox.use();
+		skyBox.getSkyBox(0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyID);
+		skyBox.setMat4("projection", projection);
+		skyBox.setMat4("view", glm::mat3(camera.getCamera()));
+		sky.render();
+
+		glDepthFunc(GL_LESS);
 		//shader.setMat4("modelMatrix", objs[4].getMatrix());
 		//objs[5].render();
 		//obj1.rotate(glm::radians(1.0f), glm::vec3(0, 0, 1));

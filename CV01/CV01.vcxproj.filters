@@ -92,5 +92,17 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="packages.config" />
+    <None Include="VertexSkyBox.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="FragmentSkyBox.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="FragmentDepth.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="VertexDepth.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

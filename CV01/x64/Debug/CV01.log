@@ -1,16 +1,7 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (CV01.vcxproj, OpenGL.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+﻿D:\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(459,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (CV01.vcxproj, OpenGL.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   Application.cpp
   The contents of <filesystem> are only available with C++17 or later.
-C:\Github\OpenGL-project\CV01\Application.cpp(11,35): warning C4244: argument: float se převádí na int; může dojít ke ztrátě dat.
-  Camera.cpp
-C:\Github\OpenGL-project\CV01\Application.cpp(11,28): warning C4244: argument: float se převádí na int; může dojít ke ztrátě dat.
-C:\Github\OpenGL-project\CV01\Camera.cpp(70,16): warning C4244: +=: double se převádí na float; může dojít ke ztrátě dat.
-  Core.cpp
-C:\Github\OpenGL-project\CV01\Camera.cpp(71,18): warning C4244: +=: double se převádí na float; může dojít ke ztrátě dat.
-  Mesh.cpp
-C:\Github\OpenGL-project\CV01\Sphere.h(2882,1): warning C4305: inicializování: zkrácení z: double na: const float
-  Renderer.cpp
-  Shader.cpp
-  Generování kódu...
-C:\Github\OpenGL-project\CV01\Sphere.h(2882,1): warning C4305: inicializování: zkrácení z: double na: const float
-  CV01.vcxproj -> C:\Github\OpenGL-project\x64\Debug\OpenGL.Application.exe
+D:\Documents\GitHub\OpenGL-project\CV01\Application.cpp(11,35): warning C4244: argument: float se převádí na int; může dojít ke ztrátě dat.
+D:\Documents\GitHub\OpenGL-project\CV01\Application.cpp(11,28): warning C4244: argument: float se převádí na int; může dojít ke ztrátě dat.
+D:\Documents\GitHub\OpenGL-project\CV01\Application.cpp(200,16): warning C4244: argument: double se převádí na int; může dojít ke ztrátě dat.
+  CV01.vcxproj -> D:\Documents\GitHub\OpenGL-project\x64\Debug\OpenGL.Application.exe

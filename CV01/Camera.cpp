@@ -90,11 +90,11 @@ void Camera::processInput(GLFWwindow* window, float cameraSpeed)
 	double tempXpos, tempYpos;
 	glfwGetCursorPos(window, &tempXpos, &tempYpos);
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		position += cameraSpeed * target;
+		position += cameraSpeed * glm::vec3(target.x, 0, target.z);
 		//this->translate(cameraSpeed * target);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		position -= cameraSpeed * target;
+		position -= cameraSpeed * glm::vec3(target.x, 0, target.z);
 		//this->translate(-(cameraSpeed * target));
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
