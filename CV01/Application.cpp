@@ -157,7 +157,6 @@ void Application::draw() {
 
 	Shader shader = Shader(&Camera(glm::vec3(0.0f, 0.0f, 0.0f)));
 	Shader skyBox = Shader(&shader.getCamera(), Shader::ShaderType::skybox);
-
 	std::vector<std::string> faces
 	{
 			"Textures/posx.jpg",
@@ -189,7 +188,7 @@ void Application::draw() {
 	Mesh(glm::vec3(-15.0f, 0.0f, -5.0f), "../Models/test.obj"),
 	Mesh(glm::vec3(-20.0f, 1.0f, -50.0f), "../Models/stone.obj"),
 	Mesh(glm::vec3(10.0f, 2.0f, -50.0f), "../Models/stone.obj"),
-	Mesh(glm::vec3(1.0f, 0.0f, -5.0f), "../Models/barrel.obj")
+	Mesh(glm::vec3(1.0f, 0.0f, -15.0f), "../Models/barrel.obj")
 	};
 
 	objs[2].rotate(-30, glm::vec3(0,1,0));
@@ -197,7 +196,7 @@ void Application::draw() {
 	objs[0].scale(60);
 
 	objs[4].rotate(30, glm::vec3(0,1, 0));
-	objs[5].scale(0.5);
+	//objs[5].scale(0.5);
 
 	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
@@ -245,7 +244,7 @@ void Application::draw() {
 		//shader.setVec3("modelColor", glm::vec3(0.5, 0.1, 0.1));
 		
 		shader.setMat4("projectionMatrix", projection);
-		camera.processInput(window, 0.25f);
+		camera.processInput(window, 0.15f);
 		camera.mouseInput(window, 0.1f);
 		shader.setMat4("viewMatrix", camera.getCamera());
 		shader.setVec3("viewPos", camera.getPosition());
@@ -271,8 +270,11 @@ void Application::draw() {
 		shader.setMat4("modelMatrix", objs[4].getMatrix());
 		objs[4].render();
 		shader.getTexture(4);
+		objs[5].rotate(2, glm::vec3(0, 1, 0));
+		objs[5].translate(glm::vec3(0.1, 0, 0));
 		shader.setMat4("modelMatrix", objs[5].getMatrix());
-		//objs[5].render();
+		objs[5].render();
+		
 		glDepthFunc(GL_LEQUAL); 
 		skyBox.use();
 		skyBox.getSkyBox(0);
